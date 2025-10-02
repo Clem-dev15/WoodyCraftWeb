@@ -31,9 +31,16 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('puzzles', PuzzleController::class)->middleware('auth');
-Route::resource('categorie', CategorieController::class)->middleware('auth');
+Route::resource('categories', CategorieController::class)->middleware('auth');
 
-Route::get('categories', [CategorieController::class, 'index'])->name('categorie.index');
-Route::get('nom', [CategorieController::class, 'show'])->name('categorie.show');
+Route::get('categories', [CategorieController::class, 'index'])->name('categories.index');
+Route::get('nom', [CategorieController::class, 'show'])->name('categories.show');
+
+// Panier
+Route::post('/panier/ajouter', [App\Http\Controllers\PanierController::class, 'ajouter'])->name('panier.ajouter');
+Route::get('/panier', [App\Http\Controllers\PanierController::class, 'index'])->name('panier.index');
+Route::delete('/panier/{id}', [PanierController::class, 'destroy'])->name('panier.destroy');
+
+
 
 require __DIR__.'/auth.php';

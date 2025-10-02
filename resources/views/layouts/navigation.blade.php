@@ -25,8 +25,12 @@
                         {{ __('Créer un puzzle') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('categorie.index')" :active="request()->routeIs('categorie.index')">
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                         {{ __('Voir les catégories') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('panier.index')" :active="request()->routeIs('panier.index')">
+                        {{ __('Voir le panier') }}
                     </x-nav-link>
                 </div>
             </div>

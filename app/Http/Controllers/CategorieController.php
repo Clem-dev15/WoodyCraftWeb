@@ -14,7 +14,7 @@ class CategorieController extends Controller
           // Cette ligne récupère toutes les catégories
 
         // Passe la variable $categories à la vue 'categorie.index'
-        return view('categorie.index', compact('categories'));  // Le problème pourrait venir ici
+        return view('categories.index', compact('categories'));  // Le problème pourrait venir ici
     }
 
 
@@ -26,7 +26,7 @@ class CategorieController extends Controller
             $puzzles = collect();
         }
         
-        return view('categorie.show', compact('categorie', 'puzzles'));
+        return view('categories.show', compact('categorie', 'puzzles'));
     }
     
 }

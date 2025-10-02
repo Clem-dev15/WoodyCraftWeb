@@ -21,7 +21,7 @@
                         <th class="px-2 py-2 text-xs text-gray-500">Prix</th>
                 </thead>
                 <tbody class="bg-white">
-                    @forelse ($puzzles as $puzzle)
+                    @forelse ($categorie->puzzles as $puzzle)
                         <tr class="whitespace-nowrap">
                             <td class="px-4 py-4 text-sm text-gray-500">{{ $puzzle->id }}</td>
                             <td class="px-4 py-4">{{ $puzzle->nom }}</td>

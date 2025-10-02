@@ -23,4 +23,5 @@
             <p>{{ optional($puzzle->updated_at)->format('d/m/Y') }}</p>
         @endif
     </x-puzzles-card>
+    
 </x-app-layout>

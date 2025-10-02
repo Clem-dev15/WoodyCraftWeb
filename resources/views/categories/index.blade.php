@@ -28,7 +28,7 @@
 
                             {{-- Show --}}
                             <td class="px-2 py-2">
-                                <a href="{{ route('categorie.show', $categorie->id) }}"
+                                <a href="{{ route('categories.show', $categorie->id) }}"
                                    class="inline-flex items-center px-2 py-1 bg-gray-800 text-white rounded-md text-xs">
                                    Show
                                 </a>
