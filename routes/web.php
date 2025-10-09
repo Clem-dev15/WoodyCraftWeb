@@ -39,10 +39,17 @@ Route::get('categories', [CategorieController::class, 'index'])->name('categorie
 Route::get('nom', [CategorieController::class, 'show'])->name('categories.show');
 
 // Panier
-Route::post('/panier/ajouter', [App\Http\Controllers\PanierController::class, 'ajouter'])->name('panier.ajouter');
-Route::get('/panier', [App\Http\Controllers\PanierController::class, 'index'])->name('panier.index');
-Route::delete('/panier/{id}', [PanierController::class, 'supprimer'])->name('panier.supprimer');
-Route::patch('/panier/{id}/quantite', [PanierController::class, 'retirerQuantite'])->name('panier.supprimer_quantite');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
+    Route::post('/panier/ajouter', [PanierController::class, 'ajouter'])->name('panier.ajouter');
+
+    Route::put('/panier/{id}/quantite', [PanierController::class, 'updateQuantite'])->name('panier.updateQuantite');
+    
+    Route::delete('/panier/{id}', [PanierController::class, 'destroy'])->name('panier.destroy');
+    Route::put('/panier', [PanierController::class, 'update'])->name('panier.update');
+    Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
+});
+
 
 //Panier
 Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');

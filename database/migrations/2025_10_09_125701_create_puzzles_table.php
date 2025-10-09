@@ -9,25 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('puzzles', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->unsignedBigInteger('categorie');
-            $table->string('description');
-            $table->string('image');
-            $table->string('prix');
+            $table->unsignedBigInteger('categorie_id');
+            $table->text('description')->nullable();
+            $table->string('image')->nullable(); // chemin vers l'image
+            $table->decimal('prix', 8, 2);
             $table->timestamps();
-        
-            
-            $table->foreign('categorie')
-                ->references('id')->on('categories') 
-                ->onDelete('cascade');
-        });
-        
 
+            $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');
+        });
     }
+
 
     /**
      * Reverse the migrations.

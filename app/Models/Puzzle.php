@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Puzzle extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'nom',
-        'categorie',
+        'categorie_id',
         'description',
-        'prix',
         'image',
+        'prix',
     ];
+
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
+
+    public function paniers()
+    {
+        return $this->hasMany(Panier::class);
+    }
 }
