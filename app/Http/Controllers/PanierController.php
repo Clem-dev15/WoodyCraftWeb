@@ -50,12 +50,40 @@ class PanierController extends Controller
     }
 
 
-    public function destroy($id)
+    public function supprimer($id)
     {
-        $article = Panier::findOrFail($id);
-        $article->delete();
+        $panier = session()->get('panier', []);
+        if (isset($panier[$id])) {
+            unset($panier[$id]);
+            session()->put('panier', $panier);
+        }
 
-        return redirect()->route('panier.index')->with('success', 'Article supprimé avec succès');
+        return redirect()->route('panier.index')->with('success', 'Produit supprimé du panier.');
     }
+
+    public function retirerQuantite(Request $request, $id)
+    {
+        $quantiteARetirer = (int) $request->input('quantite', 1);
+
+        $panier = session()->get('panier', []);
+
+        if (!isset($panier[$id])) {
+            return redirect()->route('panier.index')->with('error', 'Produit introuvable dans le panier.');
+        }
+
+        if ($quantiteARetirer >= $panier[$id]['quantite']) {
+            // Supprimer complètement si la quantité demandée est supérieure ou égale
+            unset($panier[$id]);
+        } else {
+            // Sinon on diminue simplement
+            $panier[$id]['quantite'] -= $quantiteARetirer;
+        }
+
+        session()->put('panier', $panier);
+
+        return redirect()->route('panier.index')->with('success', 'Quantité mise à jour.');
+    }
+
+
 
 }

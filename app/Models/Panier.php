@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Panier extends Model
 {
-    protected $fillable = ['puzzle_id', 'nom', 'prix'];
-}
+    protected $fillable = ['user_id', 'nom', 'quantite', 'prix', 'puzzle_id'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}

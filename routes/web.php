@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PuzzleController;
 use App\HTTP\Controllers\CategorieController;
+use App\Http\Controllers\PanierController;
+use App\Http\Controllers\CommandeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +41,12 @@ Route::get('nom', [CategorieController::class, 'show'])->name('categories.show')
 // Panier
 Route::post('/panier/ajouter', [App\Http\Controllers\PanierController::class, 'ajouter'])->name('panier.ajouter');
 Route::get('/panier', [App\Http\Controllers\PanierController::class, 'index'])->name('panier.index');
-Route::delete('/panier/{id}', [PanierController::class, 'destroy'])->name('panier.destroy');
+Route::delete('/panier/{id}', [PanierController::class, 'supprimer'])->name('panier.supprimer');
+Route::patch('/panier/{id}/quantite', [PanierController::class, 'retirerQuantite'])->name('panier.supprimer_quantite');
 
+//Panier
+Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
+Route::post('/commande', [CommandeController::class, 'store'])->name('commandes.store');
 
 
 require __DIR__.'/auth.php';
