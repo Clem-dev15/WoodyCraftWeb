@@ -46,36 +46,45 @@ class PanierController extends Controller
         return redirect()->route('panier.index')->with('success', 'Produit ajouté au panier !');
     }
 
-    public function updateQuantite(Request $request, $id)
+    public function updateQuantite(Request $request)
     {
         $userId = $request->user()->id;
+        $quantites = $request->input('quantite');
 
-        $item = Panier::where('id', $id)
-                      ->where('user_id', $userId)
-                      ->firstOrFail();
+        // Validation des quantités
+        $validated = $request->validate([
+            'quantite.*' => 'required|integer|min:1',
+        ]);
 
-        $quantite = (int) $request->input('quantite', 1);
-        if ($quantite > 0) {
-            $item->quantite = $quantite;
-            $item->save();
-        } else {
-            // Si quantité <= 0, on supprime
-            $item->delete();
+        foreach ($quantites as $id => $quantite) {
+            $item = Panier::where('id', $id)
+                        ->where('user_id', $userId)
+                        ->firstOrFail();
+
+            // Mise à jour de la quantité ou suppression
+            if ($quantite > 0) {
+                $item->quantite = $quantite;
+                $item->save();
+            } else {
+                $item->delete();
+            }
         }
 
-        return redirect()->route('panier.index')->with('success', 'Quantité mise à jour !');
+        return redirect()->route('panier.index')->with('success', 'Quantités mises à jour.');
     }
+
 
     public function destroy(Request $request, $id)
     {
         $userId = $request->user()->id;
 
         $item = Panier::where('id', $id)
-                      ->where('user_id', $userId)
-                      ->firstOrFail();
+                    ->where('user_id', $userId)
+                    ->firstOrFail();
 
         $item->delete();
 
         return redirect()->route('panier.index')->with('success', 'Article supprimé avec succès');
     }
+
 }

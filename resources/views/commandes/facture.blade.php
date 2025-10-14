@@ -15,7 +15,11 @@
 
 <h1>Facture de votre commande</h1>
 
-<p><strong>Adresse de livraison :</strong> {{ $adresse }}</p>
+<p><strong>Adresse de livraison :</strong> 
+    {{ $adresse['numero_rue'] ?? '' }} {{ $adresse['nom_rue'] ?? '' }}, 
+    {{ $adresse['ville'] ?? '' }} ({{ $adresse['departement'] ?? '' }})
+</p>
+
 
 <table>
     <thead>
@@ -48,6 +52,10 @@
 </table>
 
 <p>Merci pour votre commande !</p>
+
+<p><strong>Adresse ou envoyer le chèque :</strong> 
+    'Adresse de Woodycraft'
+</p>
 
 </body>
 </html>

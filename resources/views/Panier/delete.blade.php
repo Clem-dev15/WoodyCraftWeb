@@ -5,10 +5,10 @@
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Êtes-vous sûr de vouloir supprimer ce puzzle ?</h2>
         
         <div class="mb-4">
-            <p>Cette action est irréversible et supprimera définitivement le puzzle.</p>
+            <p>Cette action est irréversible et supprimera définitivement le puzzle <strong>{{ $item->nom }}</strong> du panier.</p>
         </div>
 
-        <form action="{{ route('panier.destroy', $paniers->id) }}" method="POST">
+        <form action="{{ route('panier.destroy', $item->id) }}" method="POST">
             @csrf
             @method('DELETE')
 

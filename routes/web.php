@@ -14,7 +14,7 @@ use App\Http\Controllers\CommandeController;
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| be assigned to the "web" middleware group.
 |
 */
 
@@ -42,18 +42,13 @@ Route::get('nom', [CategorieController::class, 'show'])->name('categories.show')
 Route::middleware(['auth'])->group(function () {
     Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
     Route::post('/panier/ajouter', [PanierController::class, 'ajouter'])->name('panier.ajouter');
-
-    Route::put('/panier/{id}/quantite', [PanierController::class, 'updateQuantite'])->name('panier.updateQuantite');
-    
-    Route::delete('/panier/{id}', [PanierController::class, 'destroy'])->name('panier.destroy');
-    Route::put('/panier', [PanierController::class, 'update'])->name('panier.update');
+    Route::put('/panier', [PanierController::class, 'updateQuantite'])->name('panier.updateQuantite');
+    Route::delete('/panier/{item}', [PanierController::class, 'destroy'])->name('panier.destroy');
     Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
 });
 
 
-//Panier
 Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
 Route::post('/commande', [CommandeController::class, 'store'])->name('commandes.store');
-
 
 require __DIR__.'/auth.php';

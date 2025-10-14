@@ -23,7 +23,7 @@
             @if($panier->isEmpty())
                 <p>Votre panier est vide.</p>
             @else
-                <form action="{{ route('panier.update') }}" method="POST">
+                <form action="{{ route('panier.updateQuantite') }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -71,7 +71,7 @@
                         </button>
 
                         <div class="text-lg font-semibold">
-                            Total : {{ number_format($total, 2) }} €
+                            Total : {{ number_format($total, 2, ',', ' ') }} €
                         </div>
                     </div>
                 </form>
