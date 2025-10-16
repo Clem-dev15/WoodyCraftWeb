@@ -10,7 +10,7 @@
             <div class="flex items-center">
                 <!-- Image du puzzle -->
                 <div class="w-1/2 pr-6">
-                    <img src="{{ asset('storage/' . $puzzle->image) }}" alt="{{ $puzzle->nom }}" class="rounded-lg shadow-lg w-full">
+                    <img src="{{ asset('images/puzzles/' . $puzzle->image) }}" alt="{{ $puzzle->nom }}" class="rounded-lg shadow-lg w-full">
                 </div>
                 
                 <!-- Détails du puzzle -->

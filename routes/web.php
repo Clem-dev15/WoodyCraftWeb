@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PuzzleController;
-use App\HTTP\Controllers\CategorieController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\CommandeController;
 
@@ -35,9 +35,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('puzzles', PuzzleController::class)->middleware('auth');
 Route::resource('categories', CategorieController::class)->middleware('auth');
-
-Route::get('categories', [CategorieController::class, 'index'])->name('categories.index');
-Route::get('nom', [CategorieController::class, 'show'])->name('categories.show');
 
 // Panier
 Route::middleware(['auth'])->group(function () {

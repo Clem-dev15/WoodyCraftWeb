@@ -10,7 +10,7 @@ class CategorieController extends Controller
     public function index()
     {
         // Récupère toutes les catégories
-        $categories = Categorie::all();
+        $categories = Categorie::with('puzzles')->get();
           // Cette ligne récupère toutes les catégories
 
         // Passe la variable $categories à la vue 'categorie.index'
@@ -20,13 +20,9 @@ class CategorieController extends Controller
 
     public function show(Categorie $categorie)
     {
-        $puzzles = $categorie->puzzles;
+        // Charge la relation puzzles pour la catégorie sélectionnée
+        $categorie->load('puzzles');
 
-        if (is_null($puzzles)){
-            $puzzles = collect();
-        }
-        
-        return view('categories.show', compact('categorie', 'puzzles'));
+        return view('categories.show', compact('categorie'));
     }
-    
 }
