@@ -23,10 +23,9 @@
             @if($panier->isEmpty())
                 <p>Votre panier est vide.</p>
             @else
-                <form action="{{ route('panier.updateQuantite') }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
+            <form action="{{ route('panier.updateQuantite') }}" method="POST">
+                @csrf
+                @method('PUT')
                     <div class="overflow-x-auto">
                         <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
                             <thead class="bg-gray-50">

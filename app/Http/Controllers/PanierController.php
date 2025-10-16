@@ -25,15 +25,15 @@ class PanierController extends Controller
         $puzzle = Puzzle::findOrFail($puzzleId);
 
         $item = Panier::where('user_id', $userId)
-                      ->where('puzzle_id', $puzzleId)
-                      ->first();
+                    ->where('puzzle_id', $puzzleId)
+                    ->first();
 
         if ($item) {
             // Si déjà dans le panier, on augmente la quantité
             $item->quantite += $quantite;
             $item->save();
         } else {
-            // Sinon on crée une nouvelle ligne
+            // Sinon, on crée une nouvelle ligne dans le panier
             Panier::create([
                 'user_id' => $userId,
                 'puzzle_id' => $puzzle->id,
@@ -45,6 +45,7 @@ class PanierController extends Controller
 
         return redirect()->route('panier.index')->with('success', 'Produit ajouté au panier !');
     }
+
 
     public function updateQuantite(Request $request)
     {

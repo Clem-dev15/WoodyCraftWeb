@@ -8,7 +8,7 @@
             <p>Cette action est irréversible et supprimera définitivement le puzzle <strong>{{ $item->nom }}</strong> du panier.</p>
         </div>
 
-        <form action="{{ route('panier.destroy', $item->id) }}" method="POST">
+        <form action="{{ route('panier.destroy', $item->id) }}" method="PUT">
             @csrf
             @method('DELETE')
 

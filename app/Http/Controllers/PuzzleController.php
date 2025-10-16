@@ -50,8 +50,12 @@ class PuzzleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Puzzle $puzzle)
+    public function show($id)
     {
+        // Récupérer le puzzle en utilisant l'ID
+        $puzzle = Puzzle::findOrFail($id);
+
+        // Retourner la vue avec les données du puzzle
         return view('puzzles.show', compact('puzzle'));
     }
 

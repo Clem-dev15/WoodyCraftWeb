@@ -42,6 +42,10 @@
                                                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-grey rounded-md hover:bg-indigo-500">
                                                     Ajouter
                                                 </button>
+                                                {{-- Bouton pour voir la description --}}
+                                                <a href="{{ route('puzzles.show', $puzzle->id) }}" class="ml-4 text-blue-600 hover:text-blue-800">
+                                                    Voir la description
+                                                </a>
                                             </form>
                                         </td>
                                     </tr>
