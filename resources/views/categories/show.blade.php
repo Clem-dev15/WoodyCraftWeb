@@ -1,53 +1,36 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Puzzles dans la catégorie : ') }} {{ $categorie->nom }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="container mx-auto">
-        @if (session()->has('message'))
-            <div class="mt-3 mb-4 text-sm text-green-600">
-                {{ session('message') }}
-            </div>
-        @endif
+@section('content')
 
-        <div class="overflow-x-auto border-b border-gray-200 shadow pt-6 bg-white">
-            <table class="min-w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-2 py-2 text-xs text-gray-500">#</th>
-                        <th class="px-2 py-2 text-xs text-gray-500">Nom du puzzle</th>
-                        <th class="px-2 py-2 text-xs text-gray-500">Prix</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white">
-                    @if ($categorie->puzzles->isEmpty())
-                        <tr>
-                            <td colspan="3" class="px-4 py-4 text-center text-sm text-gray-500">
-                                <em>Aucun puzzle pour cette catégorie.</em>
-                            </td>
-                        </tr>
-                    @else
-                        @foreach ($categorie->puzzles as $puzzle)
-                            <tr>
-                                <td class="px-4 py-4 text-sm text-gray-500">{{ $puzzle->id }}</td>
-                                <td class="px-4 py-4 flex items-center space-x-4">
-                                    <img src="{{ asset($puzzle->image) }}" alt="Image {{ $puzzle->nom }}" class="w-20 h-20 object-cover rounded">
-                                    <span>{{ $puzzle->nom }}</span>
-                                </td>
-                                <td class="px-4 py-4">{{ $puzzle->nom }}</td>
-                                <td class="px-4 py-4">{{ number_format($puzzle->prix, 2, ',', ' ') }} €</td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    <td class="px-2 py-2">
-                        <a href="{{ route('categories.index') }}" class="text-blue-600 underline">
-                            ← Retour à la liste des catégories
-                        </a>
-                    </td>
-                </tbody>
-            </table>
+<h1 class="text-2xl font-bold mb-6">
+    Catégorie : {{ $categorie->nom }}
+</h1>
+
+@if($categorie->puzzles->isEmpty())
+    <p>Aucun puzzle dans cette catégorie.</p>
+@else
+
+<div class="grid grid-cols-3 gap-6">
+
+    @foreach($categorie->puzzles as $puzzle)
+        <div class="bg-white p-4 rounded shadow">
+
+            <h2 class="font-bold">{{ $puzzle->nom }}</h2>
+
+            <p class="text-gray-600">
+                {{ $puzzle->prix }} €
+            </p>
+
+            <a href="{{ route('puzzles.show', $puzzle->id) }}"
+               class="block mt-3 bg-blue-500 text-white text-center px-3 py-2 rounded">
+                Voir
+            </a>
+
         </div>
-    </div>
-</x-app-layout>
+    @endforeach
+
+</div>
+
+@endif
+
+@endsection

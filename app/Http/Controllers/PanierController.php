@@ -49,29 +49,17 @@ class PanierController extends Controller
 
     public function updateQuantite(Request $request)
     {
-        $userId = $request->user()->id;
-        $quantites = $request->input('quantite');
+        foreach ($request->quantite as $id => $quantite) {
 
-        // Validation des quantités
-        $validated = $request->validate([
-            'quantite.*' => 'required|integer|min:1',
-        ]);
+            $item = Panier::find($id);
 
-        foreach ($quantites as $id => $quantite) {
-            $item = Panier::where('id', $id)
-                        ->where('user_id', $userId)
-                        ->firstOrFail();
-
-            // Mise à jour de la quantité ou suppression
-            if ($quantite > 0) {
+            if ($item) {
                 $item->quantite = $quantite;
                 $item->save();
-            } else {
-                $item->delete();
             }
         }
 
-        return redirect()->route('panier.index')->with('success', 'Quantités mises à jour.');
+        return redirect()->route('panier.update')->with('success', 'Panier mis à jour');
     }
 
 
@@ -87,5 +75,6 @@ class PanierController extends Controller
 
         return redirect()->route('panier.index')->with('success', 'Article supprimé avec succès');
     }
+    
 
 }

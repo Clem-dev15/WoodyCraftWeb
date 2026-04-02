@@ -42,11 +42,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/panier/ajouter', [PanierController::class, 'ajouter'])->name('panier.ajouter');
     Route::put('/panier', [PanierController::class, 'updateQuantite'])->name('panier.updateQuantite');
     Route::delete('/panier/{item}', [PanierController::class, 'destroy'])->name('panier.destroy');
-    Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
 });
 
-
-Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
-Route::post('/commande', [CommandeController::class, 'store'])->name('commandes.store');
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/commande', [CommandeController::class, 'create'])->name('commandes.create');
+    Route::post('/commande', [CommandeController::class, 'store'])->name('commandes.store');
+});
 require __DIR__.'/auth.php';

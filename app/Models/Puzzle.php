@@ -16,7 +16,7 @@ class Puzzle extends Model
 
     public function categorie()
     {
-        return $this->belongsTo(Categorie::class, 'categorie_id');
+        return $this->belongsTo(\App\Models\Categorie::class, 'categorie_id');
     }
 
     public function paniers()

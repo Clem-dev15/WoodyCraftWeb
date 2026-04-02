@@ -13,7 +13,7 @@ class PuzzleController extends Controller
      */
     public function index()
     {
-        $puzzles = Puzzle::all();
+        $puzzles = Puzzle::latest()->get(); // plus propre
         return view('puzzles.index', compact('puzzles'));
     }
 

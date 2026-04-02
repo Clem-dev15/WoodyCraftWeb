@@ -1,61 +1,36 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Liste des catégories et leurs puzzles') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="container mx-auto">
-        @if (session()->has('message'))
-            <div class="mt-3 mb-4 text-sm text-green-600">
-                {{ session('message') }}
+@section('content')
+
+<h1 class="text-2xl font-bold mb-6">Catégories</h1>
+
+@if($categories->isEmpty())
+    <p>Aucune catégorie.</p>
+@else
+    <div class="space-y-6">
+        @foreach ($categories as $categorie)
+            <div class="bg-white rounded shadow p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold">{{ $categorie->nom }}</h2>
+
+                    <a href="{{ route('categories.show', $categorie->id) }}"
+                       class="px-3 py-2 bg-gray-800 text-white rounded">
+                        Voir
+                    </a>
+                </div>
+
+                @if ($categorie->puzzles->isEmpty())
+                    <p class="text-gray-500">Aucun puzzle pour cette catégorie.</p>
+                @else
+                    <ul class="list-disc list-inside text-sm text-gray-700">
+                        @foreach ($categorie->puzzles as $puzzle)
+                            <li>{{ $puzzle->nom }}</li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
-        @endif
-
-        <div class="overflow-x-auto border-b border-gray-200 shadow pt-6 bg-white">
-            <table class="min-w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-2 py-2 text-xs text-gray-500">#</th>
-                        <th class="px-2 py-2 text-xs text-gray-500">Nom</th>
-                        <th class="px-2 py-2 text-xs text-gray-500" colspan="3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white">
-                    @forelse ($categories as $categorie)
-                        <tr class="whitespace-nowrap">
-                            <td class="px-4 py-4 text-sm text-gray-500">{{ $categorie->id }}</td>
-                            <td class="px-4 py-4 font-semibold">{{ $categorie->nom }}</td>
-                            {{-- Show --}}
-                            <td class="px-2 py-2">
-                                <a href="{{ route('categories.show', $categorie->id) }}"
-                                   class="inline-flex items-center px-2 py-1 bg-gray-800 text-white rounded-md text-xs">
-                                   Show
-                                </a>
-                            </td>
-                        </tr>
-
-                        {{-- Ligne dédiée à la liste des puzzles --}}
-                        <tr>
-                            <td colspan="5" class="px-4 py-2 bg-gray-50">
-                                @if ($categorie->puzzles->isEmpty())
-                                    <em>Aucun puzzle pour cette catégorie.</em>
-                                @else
-                                    <ul class="list-disc list-inside text-sm text-gray-700">
-                                        @foreach ($categorie->puzzles as $puzzle)
-                                            <li>{{ $puzzle->nom }}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td class="px-4 py-4 text-sm text-gray-500" colspan="5">Aucune catégorie.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+        @endforeach
     </div>
-</x-app-layout>
+@endif
+
+@endsection

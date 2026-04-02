@@ -59,3 +59,38 @@
         </div>
     </div>
 </x-app-layout>
+@extends('layouts.app')
+
+@section('content')
+
+<h1 class="text-2xl font-bold mb-6">Nos Puzzles</h1>
+
+<div class="grid grid-cols-3 gap-6">
+
+@foreach($puzzles as $puzzle)
+    <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+
+        {{-- IMAGE --}}
+        @if($puzzle->image)
+            <img src="{{ asset('storage/' . $puzzle->image) }}" 
+                 class="w-full h-48 object-cover mb-3 rounded">
+        @endif
+
+        {{-- NOM --}}
+        <h2 class="font-bold text-lg">{{ $puzzle->nom }}</h2>
+
+        {{-- PRIX --}}
+        <p class="text-gray-600">{{ $puzzle->prix }} €</p>
+
+        {{-- BOUTON VOIR --}}
+        <a href="{{ route('puzzles.show', $puzzle->id) }}"
+           class="block bg-blue-500 text-white text-center px-3 py-2 mt-3 rounded">
+            Voir le produit
+        </a>
+
+    </div>
+@endforeach
+
+</div>
+
+@endsection
