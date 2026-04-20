@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use App\Models\Puzzle;
+use Illuminate\Http\Request;
 
 class CategorieController extends Controller
 {
@@ -15,8 +17,9 @@ class CategorieController extends Controller
 
     public function show($id)
     {
-        $categorie = \App\Models\Categorie::with('puzzles')->findOrFail($id);
+        $categorie = Categorie::findOrFail($id);
+        $puzzles = Puzzle::where('categorie_id', $id)->get();
 
-        return view('categories.show', compact('categorie'));
+        return view('categories.show', compact('categorie', 'puzzles'));
     }
 }

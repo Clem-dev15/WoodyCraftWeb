@@ -1,36 +1,36 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Catégorie : ') . $categorie->nom }}
+        </h2>
+    </x-slot>
 
-@section('content')
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if($puzzles->isEmpty())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900">
+                    Aucun puzzle dans cette catégorie.
+                </div>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($puzzles as $puzzle)
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900">
+                            <h3 class="text-lg font-semibold mb-2">{{ $puzzle->nom }}</h3>
 
-<h1 class="text-2xl font-bold mb-6">
-    Catégorie : {{ $categorie->nom }}
-</h1>
+                            @if(!empty($puzzle->description))
+                                <p class="text-sm text-gray-600 mb-3">{{ $puzzle->description }}</p>
+                            @endif
 
-@if($categorie->puzzles->isEmpty())
-    <p>Aucun puzzle dans cette catégorie.</p>
-@else
+                            <p class="font-bold mb-4">{{ number_format($puzzle->prix, 2, ',', ' ') }} €</p>
 
-<div class="grid grid-cols-3 gap-6">
-
-    @foreach($categorie->puzzles as $puzzle)
-        <div class="bg-white p-4 rounded shadow">
-
-            <h2 class="font-bold">{{ $puzzle->nom }}</h2>
-
-            <p class="text-gray-600">
-                {{ $puzzle->prix }} €
-            </p>
-
-            <a href="{{ route('puzzles.show', $puzzle->id) }}"
-               class="block mt-3 bg-blue-500 text-white text-center px-3 py-2 rounded">
-                Voir
-            </a>
-
+                            <a href="{{ route('puzzles.show', $puzzle->id) }}"
+                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                                Voir le puzzle
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
-    @endforeach
-
-</div>
-
-@endif
-
-@endsection
+    </div>
+</x-app-layout>

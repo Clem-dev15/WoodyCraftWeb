@@ -8,19 +8,14 @@ class Puzzle extends Model
 {
     protected $fillable = [
         'nom',
-        'categorie_id',
         'description',
-        'image',
         'prix',
+        'categorie_id',
+        'image'
     ];
 
     public function categorie()
     {
-        return $this->belongsTo(\App\Models\Categorie::class, 'categorie_id');
-    }
-
-    public function paniers()
-    {
-        return $this->hasMany(Panier::class);
+        return $this->belongsTo(Categorie::class, 'categorie_id');
     }
 }

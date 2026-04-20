@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Categorie extends Model
 {
-    protected $table = 'categories';
-
     protected $fillable = ['nom'];
 
     public function puzzles()
     {
-        return $this->hasMany(\App\Models\Puzzle::class, 'categorie_id');
+        return $this->hasMany(Puzzle::class, 'categorie_id');
     }
 }
