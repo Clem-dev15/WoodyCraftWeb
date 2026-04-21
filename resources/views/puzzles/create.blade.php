@@ -1,63 +1,104 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create a puzzle') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <x-puzzles-card>
-        <!-- Message de réussite -->
-        @if (session()->has('message'))
-            <div class="mt-3 mb-4 list-disc list-inside text-sm text-green-600">
-                {{ session('message') }}
-            </div>
-        @endif
+@section('content')
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white shadow-sm rounded-lg p-8">
+            <h1 class="text-2xl font-bold mb-6">Créer un puzzle</h1>
 
-        <form action="{{ route('puzzles.store') }}" method="post">
-            @csrf
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <!-- Nom -->
-            <div>
-                <x-input-label for="nom" :value="__('Nom')" />
-                <x-text-input id="nom" class="block mt-1 w-full"
-                              type="text"
-                              name="nom"
-                              :value="old('nom')"
-                              required autofocus />
-                <x-input-error :messages="$errors->get('nom')" class="mt-2" />
-                
-                <x-input-label for="categorie" :value="__('Catégorie')" />
-                <x-text-input id="categorie" class="block mt-1 w-full"
-                            type="text" name="categorie" :value="old('categorie')"
-                            required />
-                <x-input-error :messages="$errors->get('categorie')" class="mt-2" />
+            <form action="{{ route('puzzles.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
 
-                <x-input-label for="description" :value="__('Description')" />
-                <x-textarea id="description" name="description" rows="4"
-                    class="block mt-1 w-full"></x-textarea>
-                <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">
+                        Nom du puzzle
+                    </label>
+                    <input
+                        type="text"
+                        name="nom"
+                        id="nom"
+                        value="{{ old('nom') }}"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                </div>
 
-                <div class="mt-4">
-                <x-input-label for="image" :value="__('Image')" />
-                <x-text-input id="image" class="block mt-1 w-full"
-                      type="text" name="image" />
-                <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                    </label>
+                    <textarea
+                        name="description"
+                        id="description"
+                        rows="4"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                    >{{ old('description') }}</textarea>
+                </div>
 
-                <div class="mt-4">
-                <x-input-label for="prix" :value="__('Prix')" />
-                <x-text-input id="prix" class="block mt-1 w-full"
-                      type="text" name="prix" />
-                <x-input-error :messages="$errors->get('prix')" class="mt-2" />
-            
-            </div>
+                <div>
+                    <label for="prix" class="block text-sm font-medium text-gray-700 mb-1">
+                        Prix
+                    </label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="prix"
+                        id="prix"
+                        value="{{ old('prix') }}"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="categorie_id" class="block text-sm font-medium text-gray-700 mb-1">
+                        Catégorie
+                    </label>
+                    <select
+                        name="categorie_id"
+                        id="categorie_id"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                        <option value="">-- Choisir une catégorie --</option>
+                        @foreach($categories as $categorie)
+                            <option value="{{ $categorie->id }}" {{ old('categorie_id') == $categorie->id ? 'selected' : '' }}>
+                                {{ $categorie->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700 mb-1">
+                        Image du puzzle
+                    </label>
+                    <input
+                        type="file"
+                        name="image"
+                        id="image"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
+                    >
+                </div>
+
+                <div>
+                    <button
+                        type="submit"
+                        class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
+                    >
+                        Créer le puzzle
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-primary-button class="ml-3">
-                    {{ __('Send') }}
-                </x-primary-button>
-            </div>
-        </form>
-    </x-puzzles-card>
-</x-app-layout>
+@endsection

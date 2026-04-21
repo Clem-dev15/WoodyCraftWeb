@@ -50,7 +50,6 @@ class PanierController extends Controller
     public function updateQuantite(Request $request)
     {
         foreach ($request->quantite as $id => $quantite) {
-
             $item = Panier::find($id);
 
             if ($item) {
@@ -59,7 +58,7 @@ class PanierController extends Controller
             }
         }
 
-        return redirect()->route('panier.update')->with('success', 'Panier mis à jour');
+        return redirect()->route('panier.index')->with('success', 'Panier mis à jour');
     }
 
 

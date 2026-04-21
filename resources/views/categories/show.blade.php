@@ -1,36 +1,70 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Catégorie : ') . $categorie->nom }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+@section('content')
+    <div class="space-y-8">
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Catégorie : {{ $categorie->nom }}
+                </h1>
+
+                <a href="{{ route('dashboard') }}" class="text-sm text-blue-600 hover:underline">
+                    Retour à l’accueil
+                </a>
+            </div>
+
             @if($puzzles->isEmpty())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900">
-                    Aucun puzzle dans cette catégorie.
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                    <p class="text-gray-600">Aucun puzzle dans cette catégorie.</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                     @foreach($puzzles as $puzzle)
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900">
-                            <h3 class="text-lg font-semibold mb-2">{{ $puzzle->nom }}</h3>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
+                            <div class="h-48 bg-gray-100 flex items-center justify-center">
+                                @if(!empty($puzzle->image))
+                                    <img src="{{ asset('storage/' . $puzzle->image) }}"
+                                         alt="{{ $puzzle->nom }}"
+                                         class="h-full w-full object-cover">
+                                @else
+                                    <span class="text-gray-400 text-sm">Aucune image</span>
+                                @endif
+                            </div>
 
-                            @if(!empty($puzzle->description))
-                                <p class="text-sm text-gray-600 mb-3">{{ $puzzle->description }}</p>
-                            @endif
+                            <div class="p-5">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                    {{ $puzzle->nom }}
+                                </h3>
 
-                            <p class="font-bold mb-4">{{ number_format($puzzle->prix, 2, ',', ' ') }} €</p>
+                                <p class="text-sm text-gray-600 mb-4 h-10 overflow-hidden">
+                                    {{ $puzzle->description ?? 'Puzzle WoodyCraft de qualité.' }}
+                                </p>
 
-                            <a href="{{ route('puzzles.show', $puzzle->id) }}"
-                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                                Voir le puzzle
-                            </a>
+                                <p class="text-2xl font-bold text-gray-900 mb-4">
+                                    {{ number_format($puzzle->prix, 2, ',', ' ') }} €
+                                </p>
+
+                                <div class="flex gap-2">
+                                    <a href="{{ route('puzzles.show', $puzzle->id) }}"
+                                       class="flex-1 text-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800">
+                                        Voir
+                                    </a>
+
+                                    <form action="{{ route('panier.ajouter') }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $puzzle->id }}">
+
+                                        <button type="submit"
+                                                class="w-full px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-300">
+                                            Panier
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @endif
-        </div>
+        </section>
     </div>
-</x-app-layout>
+@endsection

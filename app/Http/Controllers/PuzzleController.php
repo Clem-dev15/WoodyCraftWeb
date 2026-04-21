@@ -11,9 +11,31 @@ class PuzzleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $puzzles = Puzzle::latest()->get(); // plus propre
+        $query = \App\Models\Puzzle::query();
+
+        // Tri
+        if ($request->has('tri')) {
+            switch ($request->tri) {
+                case 'nom':
+                    $query->orderBy('nom', 'asc');
+                    break;
+
+                case 'prix_asc':
+                    $query->orderBy('prix', 'asc');
+                    break;
+
+                case 'prix_desc':
+                    $query->orderBy('prix', 'desc');
+                    break;
+            }
+        } else {
+            $query->latest(); // par défaut
+        }
+
+        $puzzles = $query->get();
+
         return view('puzzles.index', compact('puzzles'));
     }
 
@@ -22,31 +44,35 @@ class PuzzleController extends Controller
      */
     public function create()
     {
-        return view('puzzles.create');
-     }
+        $categories = \App\Models\Categorie::all();
+
+        return view('puzzles.create', compact('categories'));
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $date = $request->validate([
-        'nom'         => 'required|max:100',
-        'categorie'   => 'required|max:100',
-        'description' => 'required|max:500',
-        'image'       => 'required|max:500',
-        'prix'        => 'required|numeric|between:0,99.99',]);
+        $data = $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'prix' => 'required|numeric',
+            'categorie_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'categorie_id.required' => 'Le champ catégorie est obligatoire.',
+            'categorie_id.exists' => 'La catégorie sélectionnée est invalide.',
+        ]);
 
-        $puzzle = new Puzzle();
-        $puzzle->nom = $request->nom;
-        $puzzle->categorie = $request->categorie;
-        $puzzle->description = $request->description;
-        $puzzle->image = $request->image;
-        $puzzle->prix = $request->prix;
-        $puzzle->save();
-        return back()->with('message', "Le puzzle a bien été créé !");
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('puzzles', 'public');
+        }
+
+        \App\Models\Puzzle::create($data);
+
+        return redirect()->route('puzzles.index')->with('success', 'Puzzle créé avec succès.');
     }
-
     /**
      * Display the specified resource.
      */
@@ -62,35 +88,40 @@ class PuzzleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Puzzle $puzzle)
+    public function edit($id)
     {
-        return view('puzzles.edit', compact('puzzle'));
+        $puzzle = \App\Models\Puzzle::findOrFail($id);
+        $categories = \App\Models\Categorie::all();
+
+        return view('puzzles.edit', compact('puzzle', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Puzzle $puzzle)
+    public function update(Request $request, $id)
     {
+        $puzzle = \App\Models\Puzzle::findOrFail($id);
+
         $data = $request->validate([
-            'nom'         => 'required|max:100',
-            'categorie'   => 'required|max:100',
-            'description' => 'required|max:500',
-            'image'       => 'required|max:500',
-            'prix'        => 'required|numeric|between:0,99.99',]);
-            
-            $puzzle->nom=$request->nom;
-            $puzzle->categorie=$request->categorie;
-            $puzzle->description=$request->description;
-            $puzzle->image=$request->image;
-            $puzzle->prix=$request->prix;
-            $puzzle->save();
+            'nom' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'prix' => 'required|numeric',
+            'categorie_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'categorie_id.required' => 'Le champ catégorie est obligatoire.',
+            'categorie_id.exists' => 'La catégorie sélectionnée est invalide.',
+        ]);
 
-            return redirect()
-            ->route('puzzles.edit', $puzzle)
-            ->with('message', 'Puzzle mis à jour !');
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('puzzles', 'public');
+        }
+
+        $puzzle->update($data);
+
+        return redirect()->route('puzzles.index')->with('success', 'Puzzle mis à jour.');
     }
-
     /**
      * Remove the specified resource from storage.
      */

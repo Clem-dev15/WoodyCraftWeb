@@ -1,73 +1,121 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Éditer un puzzle') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <x-puzzles-card>
-        {{-- Message de réussite --}}
-        @if (session()->has('message'))
-            <div class="mt-3 mb-4 text-sm text-green-600">
-                {{ session('message') }}
-            </div>
-        @endif
+@section('content')
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white shadow-sm rounded-lg p-8">
+            <h1 class="text-2xl font-bold mb-6">Éditer un puzzle</h1>
 
-        <form action="{{ route('puzzles.update', $puzzle) }}" method="post" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+            @if (session()->has('message'))
+                <div class="mb-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded">
+                    {{ session('message') }}
+                </div>
+            @endif
 
-            {{-- Nom --}}
-            <div>
-                <x-input-label for="nom" :value="__('Nom')" />
-                <x-text-input id="nom" class="block mt-1 w-full"
-                              type="text" name="nom"
-                              :value="old('nom', $puzzle->nom)"
-                              required autofocus />
-                <x-input-error :messages="$errors->get('nom')" class="mt-2" />
-            </div>
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-700 rounded">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            {{-- Catégorie --}}
-            <div class="mt-4">
-                <x-input-label for="categorie" :value="__('Catégorie')" />
-                <x-textarea id="categorie" name="categorie" rows="2" class="block mt-1 w-full">
-                    {{ old('categorie', $puzzle->categorie) }}
-                </x-textarea>
-                <x-input-error :messages="$errors->get('categorie')" class="mt-2" />
-            </div>
+            <form action="{{ route('puzzles.update', $puzzle->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+                @method('PUT')
 
-            {{-- Description --}}
-            <div class="mt-4">
-                <x-input-label for="description" :value="__('Description')" />
-                <x-textarea id="description" name="description" rows="2" class="block mt-1 w-full">
-                    {{ old('description', $puzzle->description) }}
-                </x-textarea>
-                <x-input-error :messages="$errors->get('categorie')" class="mt-2" />
-            </div>
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">
+                        Nom
+                    </label>
+                    <input
+                        id="nom"
+                        type="text"
+                        name="nom"
+                        value="{{ old('nom', $puzzle->nom) }}"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                </div>
 
-            {{-- Image --}}
-            <div class="mt-4">
-                <x-input-label for="image" :value="__('Image')" />
-                <x-text-input id="image" class="block mt-1 w-full"
-                              type="text" name="image" />
-                <x-input-error :messages="$errors->get('image')" class="mt-2" />
-            </div>
+                <div>
+                    <label for="categorie_id" class="block text-sm font-medium text-gray-700 mb-1">
+                        Catégorie
+                    </label>
+                    <select
+                        id="categorie_id"
+                        name="categorie_id"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                        <option value="">-- Choisir une catégorie --</option>
+                        @foreach($categories as $categorie)
+                            <option value="{{ $categorie->id }}"
+                                {{ old('categorie_id', $puzzle->categorie_id) == $categorie->id ? 'selected' : '' }}>
+                                {{ $categorie->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            {{-- Prix --}}
-            <div class="mt-4">
-                <x-input-label for="prix" :value="__('Prix')" />
-                <x-text-input id="prix" class="block mt-1 w-full"
-                              type="number" name="prix"
-                              step="0.01"
-                              :value="old('prix', $puzzle->prix)" required />
-                <x-input-error :messages="$errors->get('prix')" class="mt-2" />
-            </div>
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                    >{{ old('description', $puzzle->description) }}</textarea>
+                </div>
 
-            <div class="flex items-center justify-end mt-6">
-                <x-primary-button>
-                    {{ __('Mettre à jour') }}
-                </x-primary-button>
-            </div>
-        </form>
-    </x-puzzles-card>
-</x-app-layout>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700 mb-1">
+                        Nouvelle image
+                    </label>
+                    <input
+                        id="image"
+                        type="file"
+                        name="image"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
+                    >
+
+                    @if($puzzle->image)
+                        <div class="mt-3">
+                            <p class="text-sm text-gray-600 mb-2">Image actuelle :</p>
+                            <img src="{{ asset('storage/' . $puzzle->image) }}"
+                                 alt="{{ $puzzle->nom }}"
+                                 class="h-32 rounded border">
+                        </div>
+                    @endif
+                </div>
+
+                <div>
+                    <label for="prix" class="block text-sm font-medium text-gray-700 mb-1">
+                        Prix
+                    </label>
+                    <input
+                        id="prix"
+                        type="number"
+                        step="0.01"
+                        name="prix"
+                        value="{{ old('prix', $puzzle->prix) }}"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                </div>
+
+                <div class="flex justify-end">
+                    <button
+                        type="submit"
+                        class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
+                    >
+                        Mettre à jour
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
