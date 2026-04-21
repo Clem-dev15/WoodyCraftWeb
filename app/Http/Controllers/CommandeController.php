@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use PDF; // Si tu utilises barryvdh/laravel-dompdf
 use App\Models\AdresseLivraison;
 use App\Models\Panier;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CommandeController extends Controller
 {
     public function create()
     {
-        // Récupérer le panier utilisateur depuis la BDD
         $userId = auth()->id();
         $panier = Panier::where('user_id', $userId)->get();
 
@@ -30,14 +29,21 @@ class CommandeController extends Controller
             'nom_rue' => 'required|string|max:255',
             'numero_rue' => 'required|string|max:10',
             'paiement' => 'required|in:cheque,paypal,carte',
-            'numero_carte' => 'required_if:paiement,carte|nullable|string|size:19',
+
+            'numero_carte' => 'required_if:paiement,carte|nullable|digits:16',
             'date_expiration' => 'required_if:paiement,carte|nullable|string|size:5',
-            'cvv' => 'required_if:paiement,carte|nullable|string|size:3',
+            'cvv' => 'required_if:paiement,carte|nullable|digits:3',
+        ], [
+            'numero_carte.required_if' => 'Le numéro de carte est obligatoire pour un paiement par carte.',
+            'numero_carte.digits' => 'Le numéro de carte doit contenir exactement 16 chiffres.',
+            'date_expiration.required_if' => 'La date d’expiration est obligatoire pour un paiement par carte.',
+            'date_expiration.size' => 'La date d’expiration doit être au format MM/AA.',
+            'cvv.required_if' => 'Le CVV est obligatoire pour un paiement par carte.',
+            'cvv.digits' => 'Le CVV doit contenir exactement 3 chiffres.',
         ]);
 
         $userId = auth()->id();
 
-        // Enregistrer l'adresse de livraison
         AdresseLivraison::create([
             'user_id' => $userId,
             'ville' => $validated['ville'],
@@ -46,20 +52,17 @@ class CommandeController extends Controller
             'numero_rue' => $validated['numero_rue'],
         ]);
 
-        // Récupérer le panier en base
         $panier = Panier::where('user_id', $userId)->get();
 
         if ($panier->isEmpty()) {
             return redirect()->route('panier.index')->with('error', 'Votre panier est vide.');
         }
 
-        // Calcul du total
         $total = 0;
         foreach ($panier as $item) {
             $total += $item->prix * $item->quantite;
         }
 
-        // Gestion du paiement
         if ($validated['paiement'] === 'paypal') {
             return redirect('https://www.paypal.com/fr/home/');
         }
@@ -76,25 +79,19 @@ class CommandeController extends Controller
                 ],
             ];
 
-            $pdf = PDF::loadView('commandes.facture', $data);
+            $pdf = Pdf::loadView('commandes.facture', $data);
 
-            // Vider le panier après commande
             Panier::where('user_id', $userId)->delete();
 
             return $pdf->download('facture.pdf');
         }
 
         if ($validated['paiement'] === 'carte') {
-            // Ici tu pourrais intégrer la logique de paiement CB (Stripe, etc)
-            // Pour l’instant on redirige simplement vers panier avec message
-
-            // Vider le panier
             Panier::where('user_id', $userId)->delete();
 
-            return redirect()->route('panier.index')->with('success', 'Commande validée et paiement par carte effectué !');
+            return redirect()->route('dashboard')->with('success', 'Commande validée et paiement par carte effectué.');
         }
 
-        // Par défaut, retour panier
-        return redirect()->route('panier.index')->with('success', 'Commande validée !');
+        return redirect()->route('dashboard')->with('success', 'Commande validée.');
     }
 }
