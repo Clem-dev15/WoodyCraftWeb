@@ -91,6 +91,19 @@
                                     Modifier
                                 </a>
 
+                                <form action="{{ route('puzzles.destroy', $puzzle->id) }}"
+                                    method="POST"
+                                    class="inline-block"
+                                    onsubmit="return confirm('Voulez-vous vraiment supprimer ce puzzle ?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                            class="px-4 py-2 bg-red-600 text-white rounded">
+                                        Supprimer
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     </div>

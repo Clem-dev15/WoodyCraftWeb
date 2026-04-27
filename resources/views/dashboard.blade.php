@@ -16,18 +16,18 @@
                     </h1>
 
                     <p class="text-gray-600 text-lg mb-6">
-                        Découvrez nos puzzles en bois, plastique et métal, pensés pour offrir une expérience ludique et élégante.
+                        Découvrez nos puzzles en bois, plastique et métal.
                     </p>
 
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('puzzles.index') }}"
                            class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">
-                            Voir tous les puzzles
+                            Voir tous nos puzzles
                         </a>
 
                         <a href="{{ route('categories.index') }}"
                            class="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50">
-                            Parcourir les catégories
+                            Parcourir nos catégories
                         </a>
                     </div>
                 </div>
