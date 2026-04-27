@@ -4,6 +4,5 @@ Modélisation BDD : https://mermaid.live/edit#pako:eNrFVkmPmzAU_ivI50yUEBgYbiihF
 Github : https://github.com/Clem-dev15/WoodyCraftWeb.git
 
 
-Figma : https://www.figma.com/design/DRcRGXncWq400JHQkJXOt7/WoodyCraft?node-id=0-1&t=jVgGbRbEgrHKPae3-1
 
 
