@@ -21,6 +21,10 @@
             <p class="text-sm uppercase tracking-wide text-gray-500 mb-2">
                 Produit WoodyCraft
             </p>
+            <p class="text-gray-700">
+                <strong>Fournisseur :</strong>
+                {{ $puzzle->fournisseur->nom ?? 'Non renseigné' }}
+            </p>
 
             <h1 class="text-3xl font-bold text-gray-900 mb-4">
                 {{ $puzzle->nom }}

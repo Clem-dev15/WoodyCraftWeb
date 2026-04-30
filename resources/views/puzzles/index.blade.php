@@ -25,6 +25,10 @@
                     <option value="prix_desc" {{ request('tri') == 'prix_desc' ? 'selected' : '' }}>
                         Prix décroissant
                     </option>
+
+                    <option value="fournisseur" {{ request('tri') == 'fournisseur' ? 'selected' : ''}}>
+                        Fournisseur
+                    </option>
                 </select>
             </form>
         </section>

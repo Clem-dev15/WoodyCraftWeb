@@ -25,6 +25,7 @@
     <thead>
         <tr>
             <th>Produit</th>
+            <th>Fournisseur</th>
             <th>Quantité</th>
             <th>Prix unitaire</th>
             <th>Total</th>
@@ -32,21 +33,29 @@
     </thead>
     <tbody>
         @php $total = 0; @endphp
+
         @foreach($panier as $item)
             @php
                 $sousTotal = $item['quantite'] * $item['prix'];
                 $total += $sousTotal;
+
+                $puzzle = \App\Models\Puzzle::with('fournisseur')
+                    ->where('nom', $item['nom'])
+                    ->first();
             @endphp
+
             <tr>
                 <td>{{ $item['nom'] }}</td>
+                <td>{{ $puzzle->fournisseur->nom ?? 'Non renseigné' }}</td>
                 <td>{{ $item['quantite'] }}</td>
-                <td>{{ number_format($item['prix'], 2) }} €</td>
-                <td>{{ number_format($sousTotal, 2) }} €</td>
+                <td>{{ number_format($item['prix'], 2, ',', ' ') }} €</td>
+                <td>{{ number_format($sousTotal, 2, ',', ' ') }} €</td>
             </tr>
         @endforeach
+
         <tr>
-            <td colspan="3" class="total">Total général</td>
-            <td class="total">{{ number_format($total, 2) }} €</td>
+            <td colspan="4" class="total">Total général</td>
+            <td class="total">{{ number_format($total, 2, ',', ' ') }} €</td>
         </tr>
     </tbody>
 </table>
@@ -54,7 +63,7 @@
 <p>Merci pour votre commande !</p>
 
 <p><strong>Adresse ou envoyer le chèque :</strong> 
-    'Adresse de Woodycraft'
+    'Locaux de WoodyCraft'
 </p>
 
 </body>

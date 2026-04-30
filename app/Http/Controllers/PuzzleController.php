@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Puzzle;
-
+use App\Models\Categorie;
+use App\Models\Fournisseur;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PuzzleController extends Controller
 {
@@ -44,83 +46,73 @@ class PuzzleController extends Controller
      */
     public function create()
     {
-        $categories = \App\Models\Categorie::all();
+        $categories = Categorie::all();
+        $fournisseurs = Fournisseur::all();
 
-        return view('puzzles.create', compact('categories'));
+        return view('puzzles.create', compact('categories', 'fournisseurs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'prix' => 'required|numeric',
             'categorie_id' => 'required|exists:categories,id',
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ], [
-            'categorie_id.required' => 'Le champ catégorie est obligatoire.',
-            'categorie_id.exists' => 'La catégorie sélectionnée est invalide.',
+            'prix' => 'required|numeric|min:0',
         ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('puzzles', 'public');
+            $validated['image'] = $request->file('image')->store('puzzles', 'public');
         }
 
-        \App\Models\Puzzle::create($data);
+        Puzzle::create($validated);
 
-        return redirect()->route('puzzles.index')->with('success', 'Puzzle créé avec succès.');
+        return redirect()
+            ->route('puzzles.index')
+            ->with('message', 'Puzzle créé avec succès.');
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        // Récupérer le puzzle en utilisant l'ID
-        $puzzle = Puzzle::findOrFail($id);
 
-        // Retourner la vue avec les données du puzzle
+    public function show(Puzzle $puzzle)
+    {
+        $puzzle->load(['categorie', 'fournisseur']);
+
         return view('puzzles.show', compact('puzzle'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function edit(Puzzle $puzzle)
     {
-        $puzzle = \App\Models\Puzzle::findOrFail($id);
-        $categories = \App\Models\Categorie::all();
+        $categories = Categorie::all();
+        $fournisseurs = Fournisseur::all();
 
-        return view('puzzles.edit', compact('puzzle', 'categories'));
+        return view('puzzles.edit', compact('puzzle', 'categories', 'fournisseurs'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Puzzle $puzzle)
     {
-        $puzzle = \App\Models\Puzzle::findOrFail($id);
-
-        $data = $request->validate([
+        $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'prix' => 'required|numeric',
             'categorie_id' => 'required|exists:categories,id',
+            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ], [
-            'categorie_id.required' => 'Le champ catégorie est obligatoire.',
-            'categorie_id.exists' => 'La catégorie sélectionnée est invalide.',
+            'prix' => 'required|numeric|min:0',
         ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('puzzles', 'public');
+            if ($puzzle->image) {
+                Storage::disk('public')->delete($puzzle->image);
+            }
+
+            $validated['image'] = $request->file('image')->store('puzzles', 'public');
         }
 
-        $puzzle->update($data);
+        $puzzle->update($validated);
 
-        return redirect()->route('puzzles.index')->with('success', 'Puzzle mis à jour.');
+        return redirect()
+            ->route('puzzles.index')
+            ->with('message', 'Puzzle mis à jour avec succès.');
     }
     /**
      * Remove the specified resource from storage.

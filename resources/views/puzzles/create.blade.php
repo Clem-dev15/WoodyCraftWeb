@@ -89,6 +89,27 @@
                         class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
                     >
                 </div>
+                <div>
+                    <label for="fournisseur_id" class="block text-sm font-medium text-gray-700 mb-1">
+                        Fournisseur
+                    </label>
+
+                    <select
+                        id="fournisseur_id"
+                        name="fournisseur_id"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                        required
+                    >
+                        <option value="">-- Choisir un fournisseur --</option>
+
+                        @foreach($fournisseurs as $fournisseur)
+                            <option value="{{ $fournisseur->id }}"
+                                {{ old('fournisseur_id') == $fournisseur->id ? 'selected' : '' }}>
+                                {{ $fournisseur->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 <div>
                     <button
