@@ -76,7 +76,7 @@ class PuzzleController extends Controller
 
     public function show(Puzzle $puzzle)
     {
-        $puzzle->load(['categorie', 'fournisseur']);
+  //      $puzzle->load(['categorie', 'fournisseur']); 
 
         return view('puzzles.show', compact('puzzle'));
     }

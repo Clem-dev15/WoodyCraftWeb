@@ -26,7 +26,7 @@
                         Prix décroissant
                     </option>
 
-                    <option value="fournisseur" {{ request('tri') == 'fournisseur' ? 'selected' : ''}}>
+                    <option value="fournisseur" {{ request('tri') == 'fournisseur' ? 'selected' : '' }}>
                         Fournisseur
                     </option>
                 </select>
